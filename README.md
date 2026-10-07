@@ -7,8 +7,6 @@ Built with **ASP.NET Core 8 MVC, Entity Framework Core, ASP.NET Core Identity, B
 ## Demo & Documentation
 
 * **Live Demo:** https://diploma-sticker-avon-accurate.trycloudflare.com
-* **Swagger API:** https://diploma-sticker-avon-accurate.trycloudflare.com/swagger
-* **GitHub:** https://github.com/vynavipotru/AcxiomCRM
 
 ### Demo Credentials
 
