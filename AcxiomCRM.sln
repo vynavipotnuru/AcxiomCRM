@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcxiomCRM.Domain", "AcxiomCRM.Domain\AcxiomCRM.Domain.csproj", "{EFF69DE9-F37C-4D13-81EC-5E33520AE73E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcxiomCRM.Application", "AcxiomCRM.Application\AcxiomCRM.Application.csproj", "{A2D355CB-02D1-4FC2-905A-031EBED44CCD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcxiomCRM.Infrastructure", "AcxiomCRM.Infrastructure\AcxiomCRM.Infrastructure.csproj", "{13560FCE-62A9-4C7B-9AAB-E6DEF7480D48}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcxiomCRM.Web", "AcxiomCRM.Web\AcxiomCRM.Web.csproj", "{AD6D23E4-FF9D-4360-BDCB-5C1B0517401D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcxiomCRM.Tests", "AcxiomCRM.Tests\AcxiomCRM.Tests.csproj", "{12600A31-B102-4342-8A17-8D645AE9D390}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EFF69DE9-F37C-4D13-81EC-5E33520AE73E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFF69DE9-F37C-4D13-81EC-5E33520AE73E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFF69DE9-F37C-4D13-81EC-5E33520AE73E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFF69DE9-F37C-4D13-81EC-5E33520AE73E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2D355CB-02D1-4FC2-905A-031EBED44CCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2D355CB-02D1-4FC2-905A-031EBED44CCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2D355CB-02D1-4FC2-905A-031EBED44CCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2D355CB-02D1-4FC2-905A-031EBED44CCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13560FCE-62A9-4C7B-9AAB-E6DEF7480D48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13560FCE-62A9-4C7B-9AAB-E6DEF7480D48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13560FCE-62A9-4C7B-9AAB-E6DEF7480D48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13560FCE-62A9-4C7B-9AAB-E6DEF7480D48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD6D23E4-FF9D-4360-BDCB-5C1B0517401D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD6D23E4-FF9D-4360-BDCB-5C1B0517401D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD6D23E4-FF9D-4360-BDCB-5C1B0517401D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD6D23E4-FF9D-4360-BDCB-5C1B0517401D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12600A31-B102-4342-8A17-8D645AE9D390}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12600A31-B102-4342-8A17-8D645AE9D390}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12600A31-B102-4342-8A17-8D645AE9D390}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12600A31-B102-4342-8A17-8D645AE9D390}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

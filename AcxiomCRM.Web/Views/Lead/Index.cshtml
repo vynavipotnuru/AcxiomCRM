@@ -1,0 +1,187 @@
+@model AcxiomCRM.Application.DTOs.PagedResult<AcxiomCRM.Application.DTOs.LeadDto>
+@{
+    ViewData["Title"] = "Lead Management";
+    var searchTerm = ViewBag.SearchTerm as string;
+    var currentStatus = ViewBag.Status as LeadStatus?;
+    var currentPriority = ViewBag.Priority as Priority?;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">Leads</h3>
+        <p class="text-muted small mb-0">Capture, qualify, and track prospective clients through conversion.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i> Add Lead
+    </a>
+</div>
+
+<!-- Search & Filter Card -->
+<div class="card mb-4">
+    <div class="card-body p-3">
+        <form method="get" asp-action="Index" class="row g-2 align-items-center">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" name="searchTerm" value="@searchTerm" class="form-control border-start-0" placeholder="Search by name, company, email..." />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select name="status" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Statuses</option>
+                    @foreach (LeadStatus s in Enum.GetValues(typeof(LeadStatus)))
+                    {
+                        <option value="@s" selected="@(currentStatus == s)">@s</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="priority" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Priorities</option>
+                    @foreach (Priority p in Enum.GetValues(typeof(Priority)))
+                    {
+                        <option value="@p" selected="@(currentPriority == p)">@p</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-secondary"><i class="bi bi-funnel me-1"></i> Filter</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Reset</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Leads Table -->
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Code</th>
+                        <th>Lead Name</th>
+                        <th>Company / Source</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                        <th>Expected Value</th>
+                        <th class="text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Items.Any())
+                    {
+                        @foreach (var l in Model.Items)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-semibold text-primary">@l.LeadCode</td>
+                                <div>
+                                    <div class="fw-bold text-dark">@l.LeadName</div>
+                                    <div class="small text-muted"><i class="bi bi-envelope me-1"></i>@l.Email</div>
+                                </div>
+                                <td>
+                                    <div>@(l.CompanyName ?? "N/A")</div>
+                                    <div class="small text-muted"><i class="bi bi-globe me-1"></i>@(l.Source ?? "Direct")</div>
+                                </td>
+                                <td>
+                                    @switch (l.Status)
+                                    {
+                                        case LeadStatus.New:
+                                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle">New</span>
+                                            break;
+                                        case LeadStatus.Contacted:
+                                            <span class="badge bg-info-subtle text-info border border-info-subtle">Contacted</span>
+                                            break;
+                                        case LeadStatus.Qualified:
+                                            <span class="badge bg-warning-subtle text-warning border border-warning-subtle">Qualified</span>
+                                            break;
+                                        case LeadStatus.Converted:
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle">Converted</span>
+                                            break;
+                                        case LeadStatus.Lost:
+                                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle">Lost</span>
+                                            break;
+                                        default:
+                                            <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle">@l.Status</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>
+                                    @switch (l.Priority)
+                                    {
+                                        case Priority.High:
+                                            <span class="badge bg-danger">High</span>
+                                            break;
+                                        case Priority.Medium:
+                                            <span class="badge bg-warning text-dark">Medium</span>
+                                            break;
+                                        default:
+                                            <span class="badge bg-secondary">Low</span>
+                                            break;
+                                    }
+                                </td>
+                                <td class="fw-semibold">₹@l.ExpectedValue.ToString("N0")</td>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group btn-group-sm">
+                                        <a asp-action="Details" asp-route-id="@l.LeadId" class="btn btn-outline-secondary" title="Details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        @if (l.Status != LeadStatus.Converted)
+                                        {
+                                            <a asp-action="Edit" asp-route-id="@l.LeadId" class="btn btn-outline-secondary" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a asp-action="Convert" asp-route-id="@l.LeadId" class="btn btn-outline-success" title="Convert to Customer/Opportunity">
+                                                <i class="bi bi-arrow-right-circle"></i>
+                                            </a>
+                                        }
+                                        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                                        {
+                                            <form asp-action="Delete" asp-route-id="@l.LeadId" method="post" class="d-inline" onsubmit="return confirm('Delete this lead?');">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-outline-danger" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-5 text-muted">
+                                <i class="bi bi-person-lines-fill fs-2"></i>
+                                <p class="mt-2 mb-0">No leads found matching current filters.</p>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    @if (Model.TotalPages > 1)
+    {
+        <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3">
+            <span class="small text-muted">Showing page @Model.PageIndex of @Model.TotalPages (@Model.TotalCount total)</span>
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex - 1)" asp-route-searchTerm="@searchTerm" asp-route-status="@currentStatus" asp-route-priority="@currentPriority">Previous</a>
+                </li>
+                @for (int p = 1; p <= Model.TotalPages; p++)
+                {
+                    <li class="page-item @(p == Model.PageIndex ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-pageIndex="@p" asp-route-searchTerm="@searchTerm" asp-route-status="@currentStatus" asp-route-priority="@currentPriority">@p</a>
+                    </li>
+                }
+                <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex + 1)" asp-route-searchTerm="@searchTerm" asp-route-status="@currentStatus" asp-route-priority="@currentPriority">Next</a>
+                </li>
+            </ul>
+        </div>
+    }
+</div>

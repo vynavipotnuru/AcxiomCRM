@@ -1,0 +1,107 @@
+@model AcxiomCRM.Application.DTOs.UpdateFollowUpDto
+@{
+    ViewData["Title"] = "Edit Follow-Up";
+    var customers = ViewBag.Customers as List<AcxiomCRM.Application.DTOs.CustomerDto> ?? new();
+    var leads = ViewBag.Leads as List<AcxiomCRM.Application.DTOs.LeadDto> ?? new();
+    var users = ViewBag.Users as List<AcxiomCRM.Application.DTOs.UserDto> ?? new();
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0"><i class="bi bi-pencil-square text-primary me-2"></i>Edit Follow-Up</h5>
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Back to List</a>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Edit" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="FollowUpId" />
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger p-2 small mb-3"></div>
+
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label asp-for="Subject" class="form-label fw-medium small">Subject / Purpose <span class="text-danger">*</span></label>
+                            <input asp-for="Subject" class="form-control" />
+                            <span asp-validation-for="Subject" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="FollowUpType" class="form-label fw-medium small">Activity Type</label>
+                            <select asp-for="FollowUpType" class="form-select">
+                                @foreach (FollowUpType t in Enum.GetValues(typeof(FollowUpType)))
+                                {
+                                    <option value="@t" selected="@(Model.FollowUpType == t)">@t</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="FollowUpDate" class="form-label fw-medium small">Follow-Up Date & Time <span class="text-danger">*</span></label>
+                            <input asp-for="FollowUpDate" class="form-control" type="datetime-local" value="@Model.FollowUpDate.ToString("yyyy-MM-ddTHH:mm")" />
+                            <span asp-validation-for="FollowUpDate" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="CustomerId" class="form-label fw-medium small">Related Customer</label>
+                            <select asp-for="CustomerId" class="form-select">
+                                <option value="">-- None / Select Customer --</option>
+                                @foreach (var c in customers)
+                                {
+                                    <option value="@c.CustomerId" selected="@(c.CustomerId == Model.CustomerId)">@c.CustomerName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="LeadId" class="form-label fw-medium small">Related Lead</label>
+                            <select asp-for="LeadId" class="form-select">
+                                <option value="">-- None / Select Lead --</option>
+                                @foreach (var l in leads)
+                                {
+                                    <option value="@l.LeadId" selected="@(l.LeadId == Model.LeadId)">@l.LeadName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Status" class="form-label fw-medium small">Status</label>
+                            <select asp-for="Status" class="form-select">
+                                @foreach (FollowUpStatus st in Enum.GetValues(typeof(FollowUpStatus)))
+                                {
+                                    <option value="@st" selected="@(Model.Status == st)">@st</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="AssignedTo" class="form-label fw-medium small">Assigned To</label>
+                            <select asp-for="AssignedTo" class="form-select">
+                                <option value="">-- Unassigned --</option>
+                                @foreach (var u in users)
+                                {
+                                    <option value="@u.Id" selected="@(u.Id == Model.AssignedTo)">@u.FullName (@u.Role)</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Remarks" class="form-label fw-medium small">Remarks & Agenda</label>
+                            <textarea asp-for="Remarks" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a asp-action="Index" class="btn btn-light">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4"><i class="bi bi-check-lg me-1"></i> Update Schedule</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

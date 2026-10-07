@@ -1,0 +1,83 @@
+@model AcxiomCRM.Application.DTOs.CreateActivityDto
+@{
+    ViewData["Title"] = "Log Activity";
+    var customers = ViewBag.Customers as List<AcxiomCRM.Application.DTOs.CustomerDto> ?? new();
+    var leads = ViewBag.Leads as List<AcxiomCRM.Application.DTOs.LeadDto> ?? new();
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0"><i class="bi bi-chat-left-dots text-primary me-2"></i>Log CRM Activity</h5>
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Back to List</a>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger p-2 small mb-3"></div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="ActivityType" class="form-label fw-medium small">Interaction Type</label>
+                            <select asp-for="ActivityType" class="form-select">
+                                <option value="Call">Phone Call</option>
+                                <option value="Meeting">In-Person / Virtual Meeting</option>
+                                <option value="Email">Email Communication</option>
+                                <option value="Task">Action Item / Task</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ActivityDate" class="form-label fw-medium small">Date & Time</label>
+                            <input asp-for="ActivityDate" class="form-control" type="datetime-local" value="@Model.ActivityDate.ToString("yyyy-MM-ddTHH:mm")" />
+                            <span asp-validation-for="ActivityDate" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label asp-for="Subject" class="form-label fw-medium small">Subject / Purpose <span class="text-danger">*</span></label>
+                            <input asp-for="Subject" class="form-control" placeholder="e.g. Discovery call with technical leadership" />
+                            <span asp-validation-for="Subject" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="CustomerId" class="form-label fw-medium small">Related Customer</label>
+                            <select asp-for="CustomerId" class="form-select">
+                                <option value="">-- None / Select Customer --</option>
+                                @foreach (var c in customers)
+                                {
+                                    <option value="@c.CustomerId" selected="@(c.CustomerId == Model.CustomerId)">@c.CustomerName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="LeadId" class="form-label fw-medium small">Related Lead</label>
+                            <select asp-for="LeadId" class="form-select">
+                                <option value="">-- None / Select Lead --</option>
+                                @foreach (var l in leads)
+                                {
+                                    <option value="@l.LeadId" selected="@(l.LeadId == Model.LeadId)">@l.LeadName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Description" class="form-label fw-medium small">Notes & Discussion Summary</label>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Summary of discussion, action items, customer feedback..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a asp-action="Index" class="btn btn-light">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4"><i class="bi bi-check-lg me-1"></i> Log Activity</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

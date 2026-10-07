@@ -1,0 +1,98 @@
+@model List<AcxiomCRM.Application.DTOs.OpportunityDto>
+@{
+    ViewData["Title"] = "Pipeline Board";
+    var stages = Enum.GetValues<OpportunityStage>();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">Opportunity Pipeline Board</h3>
+        <p class="text-muted small mb-0">Visual pipeline progression across sales qualification and closing stages.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-table me-1"></i> Table View
+        </a>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i> Add Opportunity
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 flex-nowrap overflow-auto pb-4">
+    @foreach (var stage in stages)
+    {
+        var oppsInStage = Model.Where(o => o.Stage == stage).ToList();
+        var totalValue = oppsInStage.Sum(o => o.Amount);
+
+        <div class="col-12 col-md-4 col-xl" style="min-width: 260px;">
+            <div class="card h-100 bg-light border-0 shadow-sm">
+                <!-- Column Header -->
+                <div class="card-header bg-white border-0 py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="fw-bold mb-0 text-dark">@stage</h6>
+                        <span class="badge bg-secondary-subtle text-secondary rounded-pill">@oppsInStage.Count</span>
+                    </div>
+                    <div class="small fw-semibold text-primary mt-1">₹@totalValue.ToString("N0")</div>
+                </div>
+
+                <!-- Column Items -->
+                <div class="card-body p-2 d-flex flex-column gap-2 overflow-auto" style="max-height: 70vh;">
+                    @if (oppsInStage.Any())
+                    {
+                        @foreach (var o in oppsInStage)
+                        {
+                            <div class="card bg-white border shadow-xs p-3">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="fw-bold mb-0 text-dark">@o.OpportunityName</h6>
+                                    <a asp-action="Edit" asp-route-id="@o.OpportunityId" class="text-muted" title="Edit">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                </div>
+                                <div class="small text-muted mb-2">
+                                    <i class="bi bi-building me-1"></i>@(o.CustomerName ?? "Lead Conversion")
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="fw-bold text-dark">₹@o.Amount.ToString("N0")</span>
+                                    <span class="badge bg-light text-dark border">@o.Probability%</span>
+                                </div>
+                                <div class="small text-muted mb-3">
+                                    <i class="bi bi-calendar me-1"></i>Close: @o.ExpectedCloseDate.ToString("MMM dd")
+                                </div>
+
+                                <!-- Move Stage Dropdown -->
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
+                                        Move Stage
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                        @foreach (OpportunityStage targetStage in stages)
+                                        {
+                                            if (targetStage != o.Stage)
+                                            {
+                                                <li>
+                                                    <form asp-action="ChangeStage" method="post">
+                                                        @Html.AntiForgeryToken()
+                                                        <input type="hidden" name="id" value="@o.OpportunityId" />
+                                                        <input type="hidden" name="newStage" value="@targetStage" />
+                                                        <button type="submit" class="dropdown-item small">To @targetStage</button>
+                                                    </form>
+                                                </li>
+                                            }
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center p-3 text-muted small">
+                            No deals in this stage
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

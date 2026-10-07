@@ -1,0 +1,283 @@
+@using System.Security.Claims
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - AcxiomCRM</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --crm-primary: #2563eb;
+            --crm-primary-dark: #1d4ed8;
+            --crm-sidebar-bg: #0f172a;
+            --crm-sidebar-text: #94a3b8;
+            --crm-sidebar-hover: #1e293b;
+            --crm-body-bg: #f8fafc;
+            --crm-card-border: #e2e8f0;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--crm-body-bg);
+            color: #1e293b;
+            min-height: 100vh;
+        }
+        .crm-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+        .crm-sidebar {
+            width: 260px;
+            background: var(--crm-sidebar-bg);
+            color: var(--crm-sidebar-text);
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .crm-sidebar .brand {
+            padding: 1.25rem 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid #1e293b;
+        }
+        .crm-sidebar .nav-link {
+            color: var(--crm-sidebar-text);
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            font-weight: 500;
+            font-size: 0.925rem;
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        .crm-sidebar .nav-link:hover {
+            color: #ffffff;
+            background-color: var(--crm-sidebar-hover);
+        }
+        .crm-sidebar .nav-link.active {
+            color: #ffffff;
+            background-color: #1e293b;
+            border-left-color: var(--crm-primary);
+        }
+        .crm-sidebar .nav-section {
+            padding: 1rem 1.5rem 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+        }
+        .crm-main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+        .crm-topbar {
+            background: #ffffff;
+            border-bottom: 1px solid var(--crm-card-border);
+            padding: 0.75rem 1.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .crm-content {
+            padding: 1.75rem;
+            flex-grow: 1;
+        }
+        .card {
+            border: 1px solid var(--crm-card-border);
+            border-radius: 0.625rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        }
+        .table thead th {
+            background-color: #f1f5f9;
+            color: #475569;
+            font-weight: 600;
+            font-size: 0.825rem;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+            border-bottom: 1px solid var(--crm-card-border);
+        }
+        .badge-status {
+            padding: 0.35em 0.65em;
+            font-weight: 600;
+            font-size: 0.75rem;
+            border-radius: 9999px;
+        }
+        .kpi-card {
+            transition: transform 0.2s;
+        }
+        .kpi-card:hover {
+            transform: translateY(-2px);
+        }
+        @@media (max-width: 992px) {
+            .crm-sidebar {
+                position: fixed;
+                left: -260px;
+                top: 0;
+                bottom: 0;
+            }
+            .crm-sidebar.show {
+                left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        var role = User.FindFirstValue(ClaimTypes.Role) ?? "User";
+        var userName = User.Identity?.Name ?? "User";
+        var userInitials = userName.Length >= 2 ? userName.Substring(0, 2).ToUpper() : "AC";
+
+        <div class="crm-wrapper">
+            <!-- Sidebar -->
+            <aside class="crm-sidebar" id="sidebar">
+                <div class="brand">
+                    <i class="bi bi-layers-fill text-primary"></i>
+                    <span>AcxiomCRM</span>
+                </div>
+                <div class="nav-section">Core Modules</div>
+                <nav class="nav flex-column flex-grow-1">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")" asp-controller="Dashboard" asp-action="Index">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Customer" ? "active" : "")" asp-controller="Customer" asp-action="Index">
+                        <i class="bi bi-people"></i> Customers
+                    </a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Lead" ? "active" : "")" asp-controller="Lead" asp-action="Index">
+                        <i class="bi bi-person-lines-fill"></i> Leads
+                    </a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Opportunity" && ViewContext.RouteData.Values["action"]?.ToString() != "Pipeline" ? "active" : "")" asp-controller="Opportunity" asp-action="Index">
+                        <i class="bi bi-briefcase"></i> Opportunities
+                    </a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Pipeline" ? "active" : "")" asp-controller="Opportunity" asp-action="Pipeline">
+                        <i class="bi bi-kanban"></i> Pipeline Board
+                    </a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "FollowUp" ? "active" : "")" asp-controller="FollowUp" asp-action="Index">
+                        <i class="bi bi-calendar-check"></i> Follow-Ups
+                    </a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Activity" ? "active" : "")" asp-controller="Activity" asp-action="Index">
+                        <i class="bi bi-clock-history"></i> Activities
+                    </a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Report" ? "active" : "")" asp-controller="Report" asp-action="Index">
+                        <i class="bi bi-bar-chart-line"></i> Reports
+                    </a>
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <div class="nav-section">Administration</div>
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "User" ? "active" : "")" asp-controller="User" asp-action="Index">
+                            <i class="bi bi-person-gear"></i> Users & Roles
+                        </a>
+                    }
+
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    {
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Audit" ? "active" : "")" asp-controller="Audit" asp-action="Index">
+                            <i class="bi bi-shield-check"></i> Audit Log
+                        </a>
+                    }
+
+                    <div class="nav-section">Integration</div>
+                    <a class="nav-link" href="/swagger" target="_blank">
+                        <i class="bi bi-code-square"></i> REST API (Swagger)
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="crm-main">
+                <!-- Topbar -->
+                <header class="crm-topbar">
+                    <div class="d-flex align-items-center gap-3">
+                        <button class="btn btn-outline-secondary btn-sm d-lg-none" type="button" onclick="document.getElementById('sidebar').classList.toggle('show')">
+                            <i class="bi bi-list"></i>
+                        </button>
+                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1">Role: @role</span>
+                    </div>
+
+                    <!-- User menu -->
+                    <div class="dropdown">
+                        <button class="btn btn-light dropdown-toggle d-flex align-items-center gap-2 border-0" type="button" data-bs-toggle="dropdown">
+                            <span class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.8rem; font-weight: 600;">@userInitials</span>
+                            <span class="d-none d-sm-inline fw-semibold" style="font-size: 0.9rem;">@userName</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                            <li class="dropdown-header">Signed in as <strong>@role</strong></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" asp-controller="Account" asp-action="ChangePassword"><i class="bi bi-key me-2"></i>Change Password</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                    <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </header>
+
+                <!-- Notifications & Alerts -->
+                <div class="crm-content">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
+                            <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+                            <div>@TempData["SuccessMessage"]</div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                            <div>@TempData["ErrorMessage"]</div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+                    @if (TempData["InfoMessage"] != null)
+                    {
+                        <div class="alert alert-info alert-dismissible fade show d-flex align-items-center" role="alert">
+                            <i class="bi bi-info-circle-fill me-2 fs-5"></i>
+                            <div>@TempData["InfoMessage"]</div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="container py-5">
+            @RenderBody()
+        </div>
+    }
+
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- jQuery & Validation -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@4.0.0/dist/jquery.validate.unobtrusive.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

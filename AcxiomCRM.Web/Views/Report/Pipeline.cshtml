@@ -1,0 +1,67 @@
+@model List<AcxiomCRM.Application.DTOs.PipelineReportDto>
+@{
+    ViewData["Title"] = "Pipeline Report";
+    var totalPipeline = Model.Sum(m => m.TotalAmount);
+    var totalWeighted = Model.Sum(m => m.WeightedAmount);
+    var totalDeals = Model.Sum(m => m.Count);
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">Opportunity Pipeline Report</h3>
+        <p class="text-muted small mb-0">Analysis of active opportunity amounts and probability-weighted pipeline values.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Index" class="btn btn-outline-secondary">Back to Reports</a>
+        <button onclick="window.print()" class="btn btn-primary"><i class="bi bi-printer me-1"></i> Print / Export</button>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card p-3 border-start border-4 border-primary shadow-sm">
+            <span class="text-muted small text-uppercase fw-semibold">Total Deals</span>
+            <h3 class="fw-bold my-1 text-dark">@totalDeals</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 border-start border-4 border-info shadow-sm">
+            <span class="text-muted small text-uppercase fw-semibold">Total Pipeline Value</span>
+            <h3 class="fw-bold my-1 text-dark">₹@totalPipeline.ToString("N0")</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 border-start border-4 border-success shadow-sm">
+            <span class="text-muted small text-uppercase fw-semibold">Weighted Pipeline Forecast</span>
+            <h3 class="fw-bold my-1 text-success">₹@totalWeighted.ToString("N0")</h3>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Pipeline Stage</th>
+                        <th class="text-center">Deals Count</th>
+                        <th class="text-end">Total Amount (₹)</th>
+                        <th class="text-end pe-4">Weighted Pipeline Forecast (₹)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var s in Model)
+                    {
+                        <tr>
+                            <td class="ps-4 fw-bold">@s.Stage</td>
+                            <td class="text-center"><span class="badge bg-secondary-subtle text-secondary rounded-pill">@s.Count</span></td>
+                            <td class="text-end fw-semibold">₹@s.TotalAmount.ToString("N0")</td>
+                            <td class="text-end pe-4 fw-bold text-success">₹@s.WeightedAmount.ToString("N0")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,156 @@
+@model AcxiomCRM.Application.DTOs.PagedResult<AcxiomCRM.Application.DTOs.CustomerDto>
+@{
+    ViewData["Title"] = "Customer Management";
+    var searchTerm = ViewBag.SearchTerm as string;
+    var currentStatus = ViewBag.Status as CustomerStatus?;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">Customers</h3>
+        <p class="text-muted small mb-0">Manage customer master data, accounts and relationship history.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i> Add Customer
+    </a>
+</div>
+
+<!-- Search & Filter Card -->
+<div class="card mb-4">
+    <div class="card-body p-3">
+        <form method="get" asp-action="Index" class="row g-2 align-items-center">
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" name="searchTerm" value="@searchTerm" class="form-control border-start-0" placeholder="Search by name, email, phone, company..." />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select name="status" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Statuses</option>
+                    <option value="Active" selected="@(currentStatus == CustomerStatus.Active)">Active</option>
+                    <option value="Inactive" selected="@(currentStatus == CustomerStatus.Inactive)">Inactive</option>
+                </select>
+            </div>
+            <div class="col-md-4 d-flex gap-2">
+                <button type="submit" class="btn btn-secondary"><i class="bi bi-funnel me-1"></i> Filter</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Reset</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Customers Table -->
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Code</th>
+                        <th>Customer / Company</th>
+                        <th>Contact Info</th>
+                        <th>City / State</th>
+                        <th>Status</th>
+                        <th>Open Opps</th>
+                        <th class="text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Items.Any())
+                    {
+                        @foreach (var c in Model.Items)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-semibold text-primary">@c.CustomerCode</td>
+                                <div>
+                                    <div class="fw-bold text-dark">@c.CustomerName</div>
+                                    <div class="small text-muted">@(c.CompanyName ?? "Individual")</div>
+                                </div>
+                                <td>
+                                    <div><i class="bi bi-envelope me-1 text-muted"></i>@c.Email</div>
+                                    <div class="small text-muted"><i class="bi bi-telephone me-1"></i>@c.Phone</div>
+                                </td>
+                                <td>
+                                    <span class="small">@(string.IsNullOrEmpty(c.City) ? "-" : $"{c.City}, {c.State}")</span>
+                                </td>
+                                <td>
+                                    @if (c.Status == CustomerStatus.Active)
+                                    {
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle">Inactive</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="badge bg-info-subtle text-info">@c.ActiveOpportunitiesCount Opps</span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group btn-group-sm">
+                                        <a asp-action="Details" asp-route-id="@c.CustomerId" class="btn btn-outline-secondary" title="Details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@c.CustomerId" class="btn btn-outline-secondary" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        @if (c.Status == CustomerStatus.Active)
+                                        {
+                                            <form asp-action="Deactivate" asp-route-id="@c.CustomerId" method="post" class="d-inline" onsubmit="return confirm('Deactivate this customer?');">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-outline-warning" title="Deactivate">
+                                                    <i class="bi bi-pause-circle"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <form asp-action="Delete" asp-route-id="@c.CustomerId" method="post" class="d-inline" onsubmit="return confirm('Permanently delete this customer record?');">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-outline-danger" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-5 text-muted">
+                                <i class="bi bi-people fs-2"></i>
+                                <p class="mt-2 mb-0">No customer records found matching the criteria.</p>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    @if (Model.TotalPages > 1)
+    {
+        <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3">
+            <span class="small text-muted">Showing page @Model.PageIndex of @Model.TotalPages (@Model.TotalCount total)</span>
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex - 1)" asp-route-searchTerm="@searchTerm" asp-route-status="@currentStatus">Previous</a>
+                </li>
+                @for (int p = 1; p <= Model.TotalPages; p++)
+                {
+                    <li class="page-item @(p == Model.PageIndex ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-pageIndex="@p" asp-route-searchTerm="@searchTerm" asp-route-status="@currentStatus">@p</a>
+                    </li>
+                }
+                <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex + 1)" asp-route-searchTerm="@searchTerm" asp-route-status="@currentStatus">Next</a>
+                </li>
+            </ul>
+        </div>
+    }
+</div>

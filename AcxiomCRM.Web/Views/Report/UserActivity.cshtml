@@ -1,0 +1,50 @@
+@model List<AcxiomCRM.Application.DTOs.UserActivityReportDto>
+@{
+    ViewData["Title"] = "User Activity Report";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">User & Representative Activity Report</h3>
+        <p class="text-muted small mb-0">Operational actions, customer creations, activities logged and deals worked per user.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Index" class="btn btn-outline-secondary">Back to Reports</a>
+        <button onclick="window.print()" class="btn btn-primary"><i class="bi bi-printer me-1"></i> Print / Export</button>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Team Member</th>
+                        <th class="text-center">Customers</th>
+                        <th class="text-center">Leads</th>
+                        <th class="text-center">Opportunities</th>
+                        <th class="text-center">Activities Logged</th>
+                        <th class="text-center pe-4">Follow-Ups Handled</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var u in Model)
+                    {
+                        <tr>
+                            <td class="ps-4">
+                                <div class="fw-bold text-dark">@u.UserName</div>
+                                <div class="small text-muted">ID: @u.UserId</div>
+                            </td>
+                            <td class="text-center"><span class="badge bg-primary-subtle text-primary">@u.CustomersCount</span></td>
+                            <td class="text-center"><span class="badge bg-info-subtle text-info">@u.LeadsCount</span></td>
+                            <td class="text-center"><span class="badge bg-success-subtle text-success">@u.OpportunitiesCount</span></td>
+                            <td class="text-center"><span class="badge bg-secondary-subtle text-secondary">@u.ActivitiesCount</span></td>
+                            <td class="text-center pe-4"><span class="badge bg-warning-subtle text-warning">@u.FollowUpsCount</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

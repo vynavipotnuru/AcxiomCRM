@@ -1,0 +1,99 @@
+@model AcxiomCRM.Application.DTOs.CreateOpportunityDto
+@{
+    ViewData["Title"] = "Add Opportunity";
+    var customers = ViewBag.Customers as List<AcxiomCRM.Application.DTOs.CustomerDto> ?? new();
+    var users = ViewBag.Users as List<AcxiomCRM.Application.DTOs.UserDto> ?? new();
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0"><i class="bi bi-briefcase text-primary me-2"></i>Create New Opportunity</h5>
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Back to List</a>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger p-2 small mb-3"></div>
+
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label asp-for="OpportunityName" class="form-label fw-medium small">Opportunity / Deal Name <span class="text-danger">*</span></label>
+                            <input asp-for="OpportunityName" class="form-control" placeholder="e.g. Enterprise License Expansion" />
+                            <span asp-validation-for="OpportunityName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="CustomerId" class="form-label fw-medium small">Customer Account</label>
+                            <select asp-for="CustomerId" class="form-select">
+                                <option value="">-- Select Customer Account --</option>
+                                @foreach (var c in customers)
+                                {
+                                    <option value="@c.CustomerId" selected="@(c.CustomerId == Model.CustomerId)">@c.CustomerName (@c.CustomerCode)</option>
+                                }
+                            </select>
+                            <span asp-validation-for="CustomerId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Amount" class="form-label fw-medium small">Deal Amount (₹) <span class="text-danger">*</span></label>
+                            <input asp-for="Amount" class="form-control" type="number" step="0.01" />
+                            <span asp-validation-for="Amount" class="text-danger small"></span>
+                            <div class="form-text small text-muted">Amount must be greater than 0.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Probability" class="form-label fw-medium small">Win Probability (%) <span class="text-danger">*</span></label>
+                            <input asp-for="Probability" class="form-control" type="number" min="0" max="100" />
+                            <span asp-validation-for="Probability" class="text-danger small"></span>
+                            <div class="form-text small text-muted">Must be between 0 and 100.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ExpectedCloseDate" class="form-label fw-medium small">Expected Close Date <span class="text-danger">*</span></label>
+                            <input asp-for="ExpectedCloseDate" class="form-control" type="date" value="@Model.ExpectedCloseDate.ToString("yyyy-MM-dd")" />
+                            <span asp-validation-for="ExpectedCloseDate" class="text-danger small"></span>
+                            <div class="form-text small text-muted">Cannot be in the past for active deals.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Stage" class="form-label fw-medium small">Pipeline Stage</label>
+                            <select asp-for="Stage" class="form-select">
+                                @foreach (OpportunityStage s in Enum.GetValues(typeof(OpportunityStage)))
+                                {
+                                    <option value="@s" selected="@(Model.Stage == s)">@s</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="AssignedTo" class="form-label fw-medium small">Assigned Owner</label>
+                            <select asp-for="AssignedTo" class="form-select">
+                                <option value="">-- Assign to Current User --</option>
+                                @foreach (var u in users)
+                                {
+                                    <option value="@u.Id">@u.FullName (@u.Role)</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Notes" class="form-label fw-medium small">Opportunity Notes & Commercials</label>
+                            <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Scope, license metrics, key stakeholders..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a asp-action="Index" class="btn btn-light">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4"><i class="bi bi-check-lg me-1"></i> Save Opportunity</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

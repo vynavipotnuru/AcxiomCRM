@@ -1,0 +1,88 @@
+@{
+    ViewData["Title"] = "CRM Reports";
+}
+
+<div class="mb-4">
+    <h3 class="fw-bold mb-1">Reports & Business Intelligence</h3>
+    <p class="text-muted small mb-0">Generate operational insights, sales conversion statistics, and pipeline metrics.</p>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="bg-primary-subtle text-primary p-3 rounded-circle">
+                        <i class="bi bi-people fs-4"></i>
+                    </div>
+                    <h5 class="fw-bold mb-0">Customer Report</h5>
+                </div>
+                <p class="text-muted small flex-grow-1">Account lists, customer statuses, account ownership, and onboarding dates.</p>
+                <a asp-action="Customers" class="btn btn-outline-primary w-100"><i class="bi bi-file-earmark-bar-graph me-1"></i> View Report</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="bg-info-subtle text-info p-3 rounded-circle">
+                        <i class="bi bi-funnel fs-4"></i>
+                    </div>
+                    <h5 class="fw-bold mb-0">Lead Report</h5>
+                </div>
+                <p class="text-muted small flex-grow-1">Prospect source attribution, qualification statuses, deal values, and conversion data.</p>
+                <a asp-action="Leads" class="btn btn-outline-info w-100"><i class="bi bi-file-earmark-bar-graph me-1"></i> View Report</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="bg-success-subtle text-success p-3 rounded-circle">
+                        <i class="bi bi-kanban fs-4"></i>
+                    </div>
+                    <h5 class="fw-bold mb-0">Pipeline Report</h5>
+                </div>
+                <p class="text-muted small flex-grow-1">Stage-wise opportunity values, win probabilities, and weighted pipeline forecasting.</p>
+                <a asp-action="Pipeline" class="btn btn-outline-success w-100"><i class="bi bi-file-earmark-bar-graph me-1"></i> View Report</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="bg-warning-subtle text-warning p-3 rounded-circle">
+                        <i class="bi bi-pie-chart fs-4"></i>
+                    </div>
+                    <h5 class="fw-bold mb-0">Conversion Report</h5>
+                </div>
+                <p class="text-muted small flex-grow-1">Lead-to-customer conversion metrics, win/loss ratios, and pipeline velocity.</p>
+                <a asp-action="Conversion" class="btn btn-outline-warning w-100 text-dark"><i class="bi bi-file-earmark-bar-graph me-1"></i> View Report</a>
+            </div>
+        </div>
+    </div>
+
+    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+    {
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="bg-danger-subtle text-danger p-3 rounded-circle">
+                            <i class="bi bi-person-lines-fill fs-4"></i>
+                        </div>
+                        <h5 class="fw-bold mb-0">User Activity Report</h5>
+                    </div>
+                    <p class="text-muted small flex-grow-1">Sales representative productivity, logged calls, scheduled meetings, and deals managed.</p>
+                    <a asp-action="UserActivity" class="btn btn-outline-danger w-100"><i class="bi bi-file-earmark-bar-graph me-1"></i> View Report</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
