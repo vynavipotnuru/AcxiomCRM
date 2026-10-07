@@ -104,9 +104,10 @@ The database is pre-seeded with three accounts representing each role (Default p
 ### Quick Start (Out-of-the-box with SQLite)
 The solution is pre-configured with SQLite enabled by default (`"UseSqlite": true` in `appsettings.json`) so it runs instantly on any machine without requiring local SQL Server setup.
 
-1. Open a terminal in the solution directory:
-   ```powershell
-   cd C:\Users\vynav\.gemini\antigravity\scratch\AcxiomCRM
+1. Clone and navigate to the project directory:
+   ```bash
+   git clone https://github.com/vynavipotnuru/AcxiomCRM.git
+   cd AcxiomCRM
    ```
 
 2. Run the web application:
