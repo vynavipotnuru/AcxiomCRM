@@ -5,6 +5,21 @@
 
 ---
 
+### 🌐 Live Public Demo & Documentation
+* 🚀 **Live Web Application**: [https://diploma-sticker-avon-accurate.trycloudflare.com](https://diploma-sticker-avon-accurate.trycloudflare.com)
+* 📖 **Interactive REST API Swagger Docs**: [https://diploma-sticker-avon-accurate.trycloudflare.com/swagger](https://diploma-sticker-avon-accurate.trycloudflare.com/swagger)
+
+#### Quick Demo Login Credentials
+| Role | Email | Password |
+| :--- | :--- | :--- |
+| **Administrator** | `admin@acxiom.com` | `Acxiom@2026!` |
+| **Sales Manager** | `manager@acxiom.com` | `Acxiom@2026!` |
+| **Sales Executive** | `sales@acxiom.com` | `Acxiom@2026!` |
+
+*(One-click demo login buttons are also provided on the sign-in screen.)*
+
+---
+
 ## 1. Architectural Overview
 
 AcxiomCRM follows a strict **Clean Layered Architecture** separating presentation, business logic, entities, and data persistence:
